@@ -2,6 +2,7 @@ package design.kfu.loginerkotlin
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                 "Alexander",
                 "Vainer",
                 "talex@mail.ru",
-                "taA2lexmailru".hashCode(),
+                "taA2lexmailru".hashCode(), //md5 or sha-1 is better here instead of hashcode()
                 R.drawable.prsn1
             ),
             Person(
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSignIn?.setOnClickListener { v ->
-            val email = emailText!!.getText().toString()
+            val email = emailText!!.getText().toString().toLowerCase()
             val pwd = passwordText!!.getText().toString()
             val hash = pwd.hashCode()
 
@@ -86,7 +87,10 @@ class MainActivity : AppCompatActivity() {
                         editor?.putString("user", p.getName())
                         editor?.putString("surname", p.getSurname())
                         editor?.putInt("image", p.getDrawable())
-                        editor?.apply()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                            editor?.apply()
+                        } else
+                            editor?.commit()
                         startActivity(intent)
                         break
                     }
